@@ -4,15 +4,16 @@ import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.Vector;
+
 
 public class Bot {
     final private String TOKEN = "195506532:AAFL384xjcf0N0KltcCWf3jsPAaVfJi62PE";
@@ -26,18 +27,24 @@ public class Bot {
         while(true){
 
             JSONObject response = callJSON(new URL(url+"getUpdates?offset"+lastOffset));
-
-            Vector<Integer> returnarray = new Vector<>();
-
             JSONArray results = (JSONArray) response.get("result");
 
             for(Object res : results){
                 JSONObject message = (JSONObject) ((JSONObject)res).get("message");
                 JSONObject file = (JSONObject) (message.get("voice"));
                 if(file != null){
-                    System.out.println(file);
-                    
+                    JSONObject filePath = (JSONObject) callJSON(new URL(url+"getFile?file_id="+file.get("file_id"))).get("result");
+                    URL fileToGet = new URL("https://api.telegram.org/file/bot"+TOKEN+"/"+filePath.get("file_path"));
+                    //Download File
+                    ReadableByteChannel rbc = Channels.newChannel(fileToGet.openStream());
+                    FileOutputStream fos = new FileOutputStream((String) file.get("file_id"));
+                    fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
                 }
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                return;
             }
         }
     }
