@@ -11,6 +11,7 @@ import java.io.*;
 import java.net.*;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -115,8 +116,9 @@ public class Bot {
 
     static JSONObject googleTranscription(String fileName) throws IOException {
         String chromeDevKey = "AIzaSyCx0Wgvm954KQnHRG7SYJxysjSW59oQ1yk";
-        String url = "https://www.google.com/speech-api/v2/";
-        String params = "recognize?output=json&lang=it-IT&key="+chromeDevKey;
+
+        String params = "?output=json&lang=it-IT&key="+chromeDevKey;
+        String url = "https://www.google.com/speech-api/v2/recognize"+params;
 
         File binfile = new File(fileName);
         HttpURLConnection conn = null;
@@ -125,18 +127,15 @@ public class Bot {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "audio/l16");
             conn.setRequestProperty("rate", "16000");
+            conn.setRequestProperty("User-Agent", "Chrome");
 
             conn.setDoOutput(true);
             conn.setDoInput(true);
-            DataOutputStream paramConn = new DataOutputStream(conn.getOutputStream());
-            paramConn.writeBytes(params);
-            paramConn.flush();
-            paramConn.close();
 
             OutputStream out = conn.getOutputStream();
             Files.copy(binfile.toPath(), out);
             out.flush();
-            System.out.println(conn.getResponseMessage());
+            System.out.println("Risposta GOOGLE:"+conn.getResponseCode()+" "+conn.getResponseMessage());
 
         } catch (IOException e) {
             e.printStackTrace();
