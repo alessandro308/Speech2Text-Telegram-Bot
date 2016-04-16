@@ -61,7 +61,7 @@ public class GoogleTranscription implements Transcription {
                 System.out.println("Non e\' ok un cactus.");
             }
 
-            Scanner in = new Scanner(filePost.getResponseBodyAsStream(), "ISO-8859-1");
+            Scanner in = new Scanner(filePost.getResponseBodyAsStream(), "UTF-8");
 
             String res = "";
             System.out.println("Primo ris: "+in.nextLine());//Salto la prima riga che è un {result: []}

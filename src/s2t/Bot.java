@@ -10,6 +10,8 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Vector;
 
 
@@ -56,10 +58,11 @@ public class Bot {
                     trasc.transcript("audio/"+file.get("file_id")+".wav");
                     text = trasc.getText();
                     sendMessage(chatID, text);
+                    new File("audio/"+file.get("file_id")+".oga").delete();
+                    new File("audio/"+file.get("file_id")+".wav").delete();
                 }
             }
             try {
-
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 return;
@@ -84,7 +87,7 @@ public class Bot {
     static String callString(URL url) throws IOException{
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         String res = "";
-        BufferedReader bf = new BufferedReader(new InputStreamReader(connection.getInputStream(), Charset.forName("ISO-8859-1")));
+        BufferedReader bf = new BufferedReader(new InputStreamReader(connection.getInputStream(), Charset.forName("UTF-8")));
         String nline;
         while(  (nline = bf.readLine()) != null ){
             res += nline;
@@ -103,7 +106,7 @@ public class Bot {
      private String sendMessage(Long chat_id, String text){
         try {
             if(!text.equals(""))
-                return callString(new URL(url+"sendMessage?chat_id="+chat_id+"&text="+URLEncoder.encode(text, "ISO-8859-1")));
+                return callString(new URL(url+"sendMessage?chat_id="+chat_id+"&text="+URLEncoder.encode(text, "UTF-8")));
             else
                 return callString(new URL(url+"sendMessage?chat_id="+chat_id+"&text="+URLEncoder.encode("Riprova. Non sono riuscito a tradurre.", "ISO-8859-1")));
         } catch (UnsupportedEncodingException e) {
