@@ -60,18 +60,18 @@ public class GoogleTranscription implements Transcription {
                 System.out.println("Non e\' ok un cactus.");
             }
 
-            Scanner in = new Scanner(filePost.getResponseBodyAsStream());
+            Scanner in = new Scanner(filePost.getResponseBodyAsStream(), "ISO-8859-1");
 
             String res = "";
             in.nextLine(); //Salto la prima riga che è un {result: []}
             String line;
             while(in.hasNextLine()){
-                    res += new String(in.nextLine().getBytes("UTF-8"));
+                    res += in.nextLine();
             }
             JSONParser p = new JSONParser();
             System.out.println("Risultato: "+res);
             //Scarto primo carattere perchè è un EOF
-            return (this.trascrizione = (JSONObject) p.parse(res.substring(1))).toString();
+            return (this.trascrizione = (JSONObject) p.parse(res)).toString();
         }catch (Exception ex) {
             ex.printStackTrace();
         } finally {

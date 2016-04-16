@@ -9,6 +9,7 @@ import java.net.*;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
+import java.nio.charset.Charset;
 import java.util.Vector;
 
 
@@ -77,7 +78,7 @@ public class Bot {
     static String callString(URL url) throws IOException{
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         String res = "";
-        BufferedReader bf = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        BufferedReader bf = new BufferedReader(new InputStreamReader(connection.getInputStream(), Charset.forName("ISO-8859-1")));
         String nline;
         while(  (nline = bf.readLine()) != null ){
             res += nline;
@@ -96,7 +97,7 @@ public class Bot {
     public static void main(String[] args){
         try{
             new Bot().start();
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
