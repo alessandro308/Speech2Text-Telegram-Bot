@@ -12,6 +12,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Scanner;
@@ -63,22 +64,24 @@ public class GoogleTranscription implements Transcription {
             Scanner in = new Scanner(filePost.getResponseBodyAsStream(), "ISO-8859-1");
 
             String res = "";
-            in.nextLine(); //Salto la prima riga che è un {result: []}
+            System.out.println("Primo ris: "+in.nextLine());//Salto la prima riga che è un {result: []}
             String line;
             while(in.hasNextLine()){
                     res += in.nextLine();
             }
             JSONParser p = new JSONParser();
-            System.out.println("Risultato: "+res);
+
             //Scarto primo carattere perchè è un EOF
-            return (this.trascrizione = (JSONObject) p.parse(res)).toString();
+            System.out.println("Risultato "+res);
+            if(!res.equals(""))
+                this.trascrizione = (JSONObject) p.parse(res);
+
         }catch (Exception ex) {
             ex.printStackTrace();
         } finally {
             filePost.releaseConnection();
+            return " ";
         }
-
-        return "";
     }
 
 }

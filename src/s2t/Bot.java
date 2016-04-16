@@ -17,19 +17,25 @@ public class Bot {
     final private String TOKEN = PARAM.botToken;
     private String url = "https://api.telegram.org/bot"+TOKEN+"/";
     static JSONParser parser = new JSONParser();
-    int x = 0;
+    int lastOffset = 857551151;
+
     public void start() throws IOException {
         //Prendiamo l'ultimo update_ID
-        int lastOffset = 857551151;
 
         while(true){
-            JSONObject response = callJSON(new URL(url+"getUpdates?offset="+lastOffset));
+            int offset = lastOffset+1;
+            URL update = new URL(url+"getUpdates?offset="+offset);
+            JSONObject response = callJSON(update);
             JSONArray results = (JSONArray) response.get("result");
             lastOffset = getLastID(response);
 
             for(Object res : results){
                 JSONObject message = (JSONObject) ((JSONObject)res).get("message");
                 JSONObject file = (JSONObject) (message.get("voice"));
+
+                JSONObject chat = (JSONObject) message.get("chat");
+                Long chatID = (Long) chat.get("id");
+
                 if(file != null){
                     JSONObject filePath = (JSONObject) callJSON(new URL(url+"getFile?file_id="+file.get("file_id"))).get("result");
                     URL fileToGet = new URL("https://api.telegram.org/file/bot"+TOKEN+"/"+filePath.get("file_path"));
@@ -44,14 +50,12 @@ public class Bot {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Transcription google = new GoogleTranscription();
+                    Transcription trasc = new GoogleTranscription();
                     String text;
 
-                    if(x == 0){ //DEBUG: eseguire solo una chiamata a Google per esecuzione
-                        google.transcript("audio/"+file.get("file_id")+".wav");
-                        text = google.getText();
-                        x++; //SEMPRE PER DEBUG
-                    }
+                    trasc.transcript("audio/"+file.get("file_id")+".wav");
+                    text = trasc.getText();
+                    sendMessage(chatID, text);
                 }
             }
             try {
@@ -71,6 +75,8 @@ public class Bot {
         JSONObject response = updateResult;
 
         JSONArray results = (JSONArray) response.get("result");
+        if (results.isEmpty())
+            return this.lastOffset;
         return Integer.parseInt( (((JSONObject)results.get(results.size()-1)).get("update_id")).toString());
     }
 
@@ -94,8 +100,24 @@ public class Bot {
         }
     }
 
+     private String sendMessage(Long chat_id, String text){
+        try {
+            if(!text.equals(""))
+                return callString(new URL(url+"sendMessage?chat_id="+chat_id+"&text="+URLEncoder.encode(text, "ISO-8859-1")));
+            else
+                return callString(new URL(url+"sendMessage?chat_id="+chat_id+"&text="+URLEncoder.encode("Riprova. Non sono riuscito a tradurre.", "ISO-8859-1")));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+         return "";
+     }
+
     public static void main(String[] args){
-        try{
+        try {
             new Bot().start();
         } catch (IOException e) {
             e.printStackTrace();
