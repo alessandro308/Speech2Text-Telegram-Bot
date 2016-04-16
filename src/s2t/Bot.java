@@ -59,7 +59,7 @@ public class Bot {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    System.out.println(googleTranscription(file.get("file_id")+".wav"));
+                    //System.out.println(googleTranscription(file.get("file_id")+".wav"));
                 }
             }
             try {
