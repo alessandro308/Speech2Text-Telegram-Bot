@@ -3,12 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="b8f5e6e3-be71-4260-a1c8-c32ad032e7c4" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/TelegramBot/s2t/Bot.class" afterPath="$PROJECT_DIR$/out/production/TelegramBot/s2t/Bot.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/s2t/Bot.java" afterPath="$PROJECT_DIR$/src/s2t/Bot.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/s2t/GoogleTranscription.java" afterPath="$PROJECT_DIR$/src/s2t/GoogleTranscription.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/s2t/PARAM_example.java" afterPath="$PROJECT_DIR$/src/s2t/PARAM_example.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/s2t/Transcription.java" afterPath="$PROJECT_DIR$/src/s2t/Transcription.java" />
     </list>
     <ignored path="TelegramBot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -31,7 +25,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Bot.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Bot.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/s2t/Bot.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="476">
@@ -43,7 +37,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="30">
@@ -675,12 +669,12 @@
       <workItem from="1460719711268" duration="2040000" />
       <workItem from="1460804805214" duration="968000" />
       <workItem from="1460805817088" duration="703000" />
-      <workItem from="1460832705838" duration="3853000" />
+      <workItem from="1460832705838" duration="3906000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="22439000" />
+    <option name="totallyTimeSpent" value="22492000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="603" y="23" width="837" height="873" extended-state="0" />
@@ -948,13 +942,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/s2t/Bot.java">
+    <entry file="jar://$PROJECT_DIR$/bin/json-simple-1.1.1.jar!/org/json/simple/parser/JSONParser.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="68" column="21" selection-start-line="68" selection-start-column="21" selection-end-line="68" selection-end-column="21" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="165">
+          <caret line="63" column="0" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -963,6 +955,16 @@
         <state relative-caret-position="30">
           <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/s2t/Bot.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="68" column="21" selection-start-line="68" selection-start-column="21" selection-end-line="68" selection-end-column="21" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
