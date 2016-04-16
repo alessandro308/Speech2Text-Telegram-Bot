@@ -33,12 +33,11 @@ public class Bot {
     private String url = "https://api.telegram.org/bot"+TOKEN+"/";
     static JSONParser parser = new JSONParser();
 
-    public Bot() throws IOException {
+    public void start() throws IOException {
         //Prendiamo l'ultimo update_ID
         int lastOffset = 0;  getUpdateID().lastElement();
 
         while(true){
-
             JSONObject response = callJSON(new URL(url+"getUpdates?offset"+lastOffset));
             JSONArray results = (JSONArray) response.get("result");
 
@@ -59,14 +58,14 @@ public class Bot {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    GoogleTranscription google = new GoogleTranscription();
-                    JSONObject text
+                    Transcription google = new GoogleTranscription();
+                    JSONObject text;
                     try {
                         text = (JSONObject) parser.parse(google.transcript(file.get("file_id")+".wav"));
+                        System.out.println(text);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    System.out.println(text);
                 }
             }
             try {
@@ -129,11 +128,10 @@ public class Bot {
             return null;
         }
     }
-
-
+    
     public static void main(String[] args){
         try{
-            new Bot();
+            new Bot().start();
         }catch (IOException e){
             e.printStackTrace();
         }
