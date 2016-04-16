@@ -15,6 +15,7 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
 
+import javax.swing.text.html.parser.Parser;
 import java.io.*;
 import java.net.*;
 import java.nio.channels.Channels;
@@ -27,9 +28,8 @@ import java.util.List;
 import java.util.Vector;
 import java.util.Scanner;
 
-
 public class Bot {
-    final private String TOKEN = "195506532:AAFL384xjcf0N0KltcCWf3jsPAaVfJi62PE";
+    final private String TOKEN = PARAM.botToken;
     private String url = "https://api.telegram.org/bot"+TOKEN+"/";
     static JSONParser parser = new JSONParser();
 
@@ -51,7 +51,7 @@ public class Bot {
                     //Download File
                     //System.out.println(fileToGet);
                     ReadableByteChannel rbc = Channels.newChannel(fileToGet.openStream());
-                    FileOutputStream fos = new FileOutputStream(file.get("file_id") + ".oga");
+                    FileOutputStream fos = new FileOutputStream("audio/"+file.get("file_id") + ".oga");
                     fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
                     Process p = Runtime.getRuntime().exec("opusdec --rate 16000 "+file.get("file_id")+".oga"+" "+file.get("file_id")+".wav");
                     try {
@@ -59,7 +59,14 @@ public class Bot {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    //System.out.println(googleTranscription(file.get("file_id")+".wav"));
+                    GoogleTranscription google = new GoogleTranscription();
+                    JSONObject text
+                    try {
+                        text = (JSONObject) parser.parse(google.transcript(file.get("file_id")+".wav"));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println(text);
                 }
             }
             try {
@@ -123,48 +130,6 @@ public class Bot {
         }
     }
 
-    static JSONObject googleTranscription(String fileName) throws IOException {
-        String chromeDevKey = "AIzaSyCx0Wgvm954KQnHRG7SYJxysjSW59oQ1yk";
-
-        String params = "?output=json&lang=it-IT&key="+chromeDevKey;
-        String url = "https://www.google.com/speech-api/v2/recognize"+params;
-
-        File binfile = new File(fileName);
-
-        PostMethod filePost = new PostMethod(url);
-
-        filePost.setRequestHeader("Content-Type","audio/l16; rate=16000;");
-
-        try {
-            Part[] parts = { new FilePart(binfile.getName(), binfile) };
-
-            filePost.setRequestEntity(new MultipartRequestEntity(parts, filePost.getParams()));
-      
-            HttpClient client = new HttpClient();
-            client.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
-                             
-            int status = client.executeMethod(filePost);
-
-            if (status == HttpStatus.SC_OK) {
-                System.out.println("TUTTO OK");
-            } else {
-                System.out.println("Non e\' ok un cactus.");
-            }
-
-            Scanner in = new Scanner(filePost.getResponseBodyAsStream());
-
-            while(in.hasNext()){
-                System.out.println(in.nextLine());
-            }
-
-        }catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {             
-            filePost.releaseConnection();
-        }
-        
-        return null;
-    }
 
     public static void main(String[] args){
         try{
