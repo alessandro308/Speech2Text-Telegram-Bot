@@ -61,7 +61,7 @@ public class Bot {
                     Transcription google = new GoogleTranscription();
                     JSONObject text;
                     try {
-                        text = (JSONObject) parser.parse(google.transcript(file.get("file_id")+".wav"));
+                        text = (JSONObject) parser.parse(google.transcript("audio/"+file.get("file_id")+".wav"));
                         System.out.println(text);
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -128,7 +128,7 @@ public class Bot {
             return null;
         }
     }
-    
+
     public static void main(String[] args){
         try{
             new Bot().start();
