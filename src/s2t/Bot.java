@@ -32,14 +32,15 @@ public class Bot {
     final private String TOKEN = PARAM.botToken;
     private String url = "https://api.telegram.org/bot"+TOKEN+"/";
     static JSONParser parser = new JSONParser();
-
+    int x = 0;
     public void start() throws IOException {
         //Prendiamo l'ultimo update_ID
-        int lastOffset = 0;  getUpdateID().lastElement();
+        int lastOffset = 857551151;
 
         while(true){
-            JSONObject response = callJSON(new URL(url+"getUpdates?offset"+lastOffset));
+            JSONObject response = callJSON(new URL(url+"getUpdates?offset="+lastOffset));
             JSONArray results = (JSONArray) response.get("result");
+            lastOffset = getLastID(response);
 
             for(Object res : results){
                 JSONObject message = (JSONObject) ((JSONObject)res).get("message");
@@ -52,23 +53,24 @@ public class Bot {
                     ReadableByteChannel rbc = Channels.newChannel(fileToGet.openStream());
                     FileOutputStream fos = new FileOutputStream("audio/"+file.get("file_id") + ".oga");
                     fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-                    Process p = Runtime.getRuntime().exec("opusdec --rate 16000 "+file.get("file_id")+".oga"+" "+file.get("file_id")+".wav");
+                    Process p = Runtime.getRuntime().exec("opusdec --rate 16000 "+"audio/"+file.get("file_id")+".oga"+" "+"audio/"+file.get("file_id")+".wav");
                     try {
                         p.waitFor();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     Transcription google = new GoogleTranscription();
-                    JSONObject text;
-                    try {
-                        text = (JSONObject) parser.parse(google.transcript("audio/"+file.get("file_id")+".wav"));
-                        System.out.println(text);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                    String text;
+
+                    if(x == 0){ //DEBUG: eseguire solo una chiamata a Google per esecuzione
+                        google.transcript("audio/"+file.get("file_id")+".wav");
+                        text = google.getText();
+                        x++; //SEMPRE PER DEBUG
                     }
                 }
             }
             try {
+
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 return;
@@ -76,37 +78,15 @@ public class Bot {
         }
     }
 
-    private Vector<Integer> getUpdateID() {
-        String line = "";
-        try {
-            URL getUpdate = new URL(url+"getUpdates");
-            HttpURLConnection connection;
-            connection = (HttpURLConnection) getUpdate.openConnection();
-            connection.connect();
-            BufferedReader bf = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String nline;
-            while(  (nline = bf.readLine()) != null ){
-                line += nline;
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e){
-            e.printStackTrace();
-        }
+    private int getLastID(JSONObject updateResult) {
 
         JSONParser parser = new JSONParser();
         Vector<Integer> returnarray = new Vector<>();
-        try {
-            JSONObject response = (JSONObject) parser.parse(line);
-            JSONArray results = (JSONArray) response.get("result");
-            for(Object res : results){
-               returnarray.add(Integer.parseInt( (((JSONObject)res).get("update_id")).toString()) );
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
-        return returnarray;
+        JSONObject response = updateResult;
+
+        JSONArray results = (JSONArray) response.get("result");
+        return Integer.parseInt( (((JSONObject)results.get(results.size()-1)).get("update_id")).toString());
     }
 
 

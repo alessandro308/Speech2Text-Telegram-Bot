@@ -6,7 +6,10 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,8 +19,19 @@ import java.util.Scanner;
  * Created by alessandro on 16/04/16.
  */
 public class GoogleTranscription implements Transcription {
+    JSONObject trascrizione;
 
     public GoogleTranscription(){};
+
+    public String getText(){
+        if(trascrizione == null){
+            return "";
+        }else{
+            //Parsa JSON
+            JSONObject temp = ((JSONObject) ((JSONArray) ((JSONObject) ((JSONArray) trascrizione.get("result")).get(0)).get("alternative")).get(0));
+            return (String) temp.get("transcript");
+        }
+    }
 
     public String transcript(String fileName) throws IOException {
         String chromeDevKey = PARAM.chromeKey1;
@@ -41,19 +55,22 @@ public class GoogleTranscription implements Transcription {
 
             int status = client.executeMethod(filePost);
 
-            if (status == HttpStatus.SC_OK) {
-                System.out.println("TUTTO OK");
-            } else {
+            if (status != HttpStatus.SC_OK) {
                 System.out.println("Non e\' ok un cactus.");
             }
 
             Scanner in = new Scanner(filePost.getResponseBodyAsStream());
 
             String res = "";
-            while(in.hasNext()){
-                res += in.nextLine();
+            in.nextLine(); //Salto la prima riga che è un {result: []}
+            String line;
+            while(in.hasNextLine()){
+                    res += in.nextLine();
             }
-            return res;
+            JSONParser p = new JSONParser();
+            System.out.println("Risultato: "+res);
+            //Scarto primo carattere perchè è un EOF
+            return (this.trascrizione = (JSONObject) p.parse(res.substring(1))).toString();
         }catch (Exception ex) {
             ex.printStackTrace();
         } finally {
