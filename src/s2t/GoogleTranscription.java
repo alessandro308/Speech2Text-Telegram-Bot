@@ -13,6 +13,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Scanner;
 
 /**
@@ -65,7 +66,7 @@ public class GoogleTranscription implements Transcription {
             in.nextLine(); //Salto la prima riga che è un {result: []}
             String line;
             while(in.hasNextLine()){
-                    res += in.nextLine();
+                    res += new String(in.nextLine().getBytes("UTF-8"));
             }
             JSONParser p = new JSONParser();
             System.out.println("Risultato: "+res);
