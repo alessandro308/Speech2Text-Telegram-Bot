@@ -4,7 +4,15 @@ import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.omg.CORBA.NameValuePair;
-import sun.jvm.hotspot.debugger.cdbg.basic.BasicNamedFieldIdentifier;
+//import sun.jvm.hotspot.debugger.cdbg.basic.BasicNamedFieldIdentifier;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 
 
 import java.io.*;
@@ -17,6 +25,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.Scanner;
 
 
 public class Bot {
@@ -121,27 +130,39 @@ public class Bot {
         String url = "https://www.google.com/speech-api/v2/recognize"+params;
 
         File binfile = new File(fileName);
-        HttpURLConnection conn = null;
+
+        PostMethod filePost = new PostMethod(url);
+
+        filePost.setRequestHeader("Content-Type","audio/l16; rate=16000;");
+
         try {
-            conn = (HttpURLConnection) new URL(url).openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "audio/l16");
-            conn.setRequestProperty("rate", "16000");
-            conn.setRequestProperty("User-Agent", "Chrome");
+            Part[] parts = { new FilePart(binfile.getName(), binfile) };
 
-            conn.setDoOutput(true);
-            conn.setDoInput(true);
+            filePost.setRequestEntity(new MultipartRequestEntity(parts, filePost.getParams()));
+      
+            HttpClient client = new HttpClient();
+            client.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
+                             
+            int status = client.executeMethod(filePost);
 
-            OutputStream out = conn.getOutputStream();
-            Files.copy(binfile.toPath(), out);
-            out.flush();
-            System.out.println("Risposta GOOGLE:"+conn.getResponseCode()+" "+conn.getResponseMessage());
+            if (status == HttpStatus.SC_OK) {
+                System.out.println("TUTTO OK");
+            } else {
+                System.out.println("Non e\' ok un cactus.");
+            }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            Scanner in = new Scanner(filePost.getResponseBodyAsStream());
+
+            while(in.hasNext()){
+                System.out.println(in.nextLine());
+            }
+
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {             
+            filePost.releaseConnection();
         }
-
+        
         return null;
     }
 
