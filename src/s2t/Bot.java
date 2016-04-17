@@ -28,6 +28,7 @@ public class Bot {
             int offset = lastOffset+1;
             URL update = new URL(url+"getUpdates?offset="+offset);
             JSONObject response = callJSON(update);
+            System.out.println(response);
             JSONArray results = (JSONArray) response.get("result");
             lastOffset = getLastID(response);
 
