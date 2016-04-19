@@ -11,9 +11,6 @@ import java.nio.channels.ReadableByteChannel;
 
 import static s2t.Bot.callJSON;
 
-/**
- * Created by alessandro on 19/04/16.
- */
 public class TranscriptAudio implements Runnable {
     String url;
     Object res;

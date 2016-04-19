@@ -18,7 +18,6 @@ import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
 public class Bot {
     final private String TOKEN = PARAM.botToken;
     private String url = "https://api.telegram.org/bot"+TOKEN+"/";
