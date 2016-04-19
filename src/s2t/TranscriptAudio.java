@@ -2,10 +2,7 @@ package s2t;
 
 import org.json.simple.JSONObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -19,45 +16,10 @@ import static s2t.Bot.callJSON;
  */
 public class TranscriptAudio implements Runnable {
     String url;
-
+    Object res;
     public TranscriptAudio(Object res, String telegramUrl) throws IOException {
         url = telegramUrl;
-        JSONObject message = (JSONObject) ((JSONObject)res).get("message");
-        JSONObject file = (JSONObject) (message.get("voice"));
-
-        JSONObject chat = (JSONObject) message.get("chat");
-        Long chatID = (Long) chat.get("id");
-
-        if(file != null){
-            JSONObject filePath = (JSONObject) callJSON(new URL(url+"getFile?file_id="+file.get("file_id"))).get("result");
-            URL fileToGet = new URL("https://api.telegram.org/file/bot"+PARAM.botToken+"/"+filePath.get("file_path"));
-            //Download File
-            //System.out.println(fileToGet);
-            ReadableByteChannel rbc = Channels.newChannel(fileToGet.openStream());
-            FileOutputStream fos = new FileOutputStream("audio/"+file.get("file_id") + ".oga");
-            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-            Process p = Runtime.getRuntime().exec("opusdec --rate 16000 "+"audio/"+file.get("file_id")+".oga"+" "+"audio/"+file.get("file_id")+".wav");
-            try {
-                p.waitFor();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            Transcription trasc = new WitTranscription();
-            String text;
-
-            try{
-                trasc.transcript("audio/"+file.get("file_id")+".wav");
-                text = trasc.getText();
-                sendMessage(chatID, text);
-            } catch (NullPointerException e){
-                sendMessage(chatID, "Errore interno al server (NullPointerException)");
-                e.printStackTrace();
-            }
-
-            new File("audio/"+file.get("file_id")+".oga").delete();
-            new File("audio/"+file.get("file_id")+".wav").delete();
-        }
+        this.res = res;
     }
 
     private String sendMessage(Long chat_id, String text){
@@ -77,6 +39,84 @@ public class TranscriptAudio implements Runnable {
     }
     @Override
     public void run() {
+        JSONObject message = (JSONObject) ((JSONObject)res).get("message");
 
+        JSONObject voice = (JSONObject) (message.get("voice"));
+        if(voice != null){
+
+            if(!downloadAndConvert(voice))
+                return;
+            transcript(message, voice);
+
+        }else{
+            JSONObject document = (JSONObject) (message.get("document"));
+            if(document != null){
+                try {
+                    if (document.get("mime_type").equals("application/octet-stream")) {
+                        if(!downloadAndConvert(document))
+                            return;
+                        transcript(message, document);
+                    }
+                } catch (NullPointerException e){
+                    return;
+                }
+            }
+        }
+    }
+
+    private boolean downloadAndConvert(JSONObject voice){
+        JSONObject filePath;
+        URL fileToGet;
+        ReadableByteChannel rbc;
+        try {
+            filePath = (JSONObject) callJSON(new URL(url+"getFile?file_id="+voice.get("file_id"))).get("result");
+            fileToGet = new URL("https://api.telegram.org/file/bot"+ PARAM.botToken+"/"+filePath.get("file_path"));
+            rbc = Channels.newChannel(fileToGet.openStream());
+        } catch (MalformedURLException e) {
+            System.err.println("Errore formattazione url richiesta file Telegram");
+            return false;
+        } catch (IOException e){
+            return false;
+        }
+
+        FileOutputStream fos;
+        try {
+            fos = new FileOutputStream("audio/"+voice.get("file_id") + ".oga");
+            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            Process p = Runtime.getRuntime().exec("opusdec --rate 16000 "+"audio/"+voice.get("file_id")+".oga"+" "+"audio/"+voice.get("file_id")+".wav");
+            p.waitFor();
+            return true;
+        } catch (InterruptedException e) {
+            return false;
+        } catch ( IOException e){
+            System.err.println("Errore opusdec execution");
+            return false;
+        }
+    }
+
+    private void transcript(JSONObject message, JSONObject voice){
+        JSONObject chat = (JSONObject) message.get("chat");
+        Long chatID = (Long) chat.get("id");
+        Transcription trasc = new WitTranscription();
+        String text;
+
+        try{
+            trasc.transcript("audio/"+voice.get("file_id")+".wav");
+            text = trasc.getText();
+            sendMessage(chatID, text);
+        } catch (NullPointerException e){
+            sendMessage(chatID, "Errore interno al server (NullPointerException)");
+            e.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
+            return;
+        }
+
+        new File("audio/"+voice.get("file_id")+".oga").delete();
+        new File("audio/"+voice.get("file_id")+".wav").delete();
     }
 }
