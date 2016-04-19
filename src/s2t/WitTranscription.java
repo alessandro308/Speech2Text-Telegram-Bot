@@ -6,7 +6,6 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -14,35 +13,23 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class GoogleTranscription implements Transcription {
+
+public class WitTranscription implements Transcription {
     JSONObject trascrizione;
 
-    public GoogleTranscription(){};
-
-    public String getText(){
-        if(trascrizione == null){
-            return "";
-        }else{
-            //Parsa JSON
-            JSONObject temp = ((JSONObject) ((JSONArray) ((JSONObject) ((JSONArray) trascrizione.get("result")).get(0)).get("alternative")).get(0));
-            return (String) temp.get("transcript");
-        }
-    }
-
     public String transcript(String fileName) throws IOException {
-        String chromeDevKey = PARAM.chromeKey1;
-
-        String params = "?output=json&lang=it-IT&key="+chromeDevKey;
-        String url = "https://www.google.com/speech-api/v2/recognize"+params;
+        String params = "?v=20141022";
+        String url = "https://api.wit.ai/speech"+params;
 
         File binfile = new File(fileName);
 
         PostMethod filePost = new PostMethod(url);
 
-        filePost.setRequestHeader("Content-Type","audio/l16; rate=16000;");
+        filePost.setRequestHeader("Authorization", "Bearer " + PARAM.witServerAPI);
+        filePost.setRequestHeader("Content-Type", "audio/wav");
 
         try {
-            Part[] parts = { new FilePart(binfile.getName(), binfile) };
+            Part[] parts = {new FilePart(binfile.getName(), binfile)};
 
             filePost.setRequestEntity(new MultipartRequestEntity(parts, filePost.getParams()));
 
@@ -52,25 +39,21 @@ public class GoogleTranscription implements Transcription {
             int status = client.executeMethod(filePost);
 
             if (status != HttpStatus.SC_OK) {
-                System.out.println("Non e\' ok un cactus.");
+                System.out.println("Errore");
             }
 
             Scanner in = new Scanner(filePost.getResponseBodyAsStream(), "UTF-8");
 
             String res = "";
-            System.out.println("Primo ris: "+in.nextLine());//Salto la prima riga che è un {result: []}
-            String line;
-            while(in.hasNextLine()){
-                    res += in.nextLine();
+            while (in.hasNextLine()) {
+                res += in.nextLine();
             }
             JSONParser p = new JSONParser();
 
-            //Scarto primo carattere perchè è un EOF
-            System.out.println("Risultato "+res);
-            if(!res.equals(""))
+            System.out.println("Risultato " + res);
+            if (!res.equals(""))
                 this.trascrizione = (JSONObject) p.parse(res);
-
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
             filePost.releaseConnection();
@@ -78,4 +61,15 @@ public class GoogleTranscription implements Transcription {
         }
     }
 
+    public String getText() {
+        if(trascrizione == null){
+            return "";
+        }else{
+            System.out.println(trascrizione);
+            String text = (String) this.trascrizione.get("_text");
+            if(text == null)
+                 return "";
+            return text;
+        }
+    }
 }

@@ -1,5 +1,7 @@
 package s2t;
-
+/* CURL:
+    curl -i -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: audio/wav" --data-binary "@amico.wav" 'https://api.wit.ai/speech?v=20141022'
+*/
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -28,7 +30,7 @@ public class Bot {
             int offset = lastOffset+1;
             URL update = new URL(url+"getUpdates?offset="+offset);
             JSONObject response = callJSON(update);
-            System.out.println(response);
+            System.out.println("Update at "+System.currentTimeMillis()/1000L);
             JSONArray results = (JSONArray) response.get("result");
             lastOffset = getLastID(response);
 
@@ -53,14 +55,21 @@ public class Bot {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Transcription trasc = new GoogleTranscription();
+
+                    Transcription trasc = new WitTranscription();
                     String text;
 
-                    trasc.transcript("audio/"+file.get("file_id")+".wav");
-                    text = trasc.getText();
-                    sendMessage(chatID, text);
-                    new File("audio/"+file.get("file_id")+".oga").delete();
-                    new File("audio/"+file.get("file_id")+".wav").delete();
+                    try{
+                        trasc.transcript("audio/"+file.get("file_id")+".wav");
+                        text = trasc.getText();
+                        sendMessage(chatID, text);
+                    } catch (NullPointerException e){
+                        sendMessage(chatID, "Errore interno al server (NullPointerException)");
+                        e.printStackTrace();
+                    }
+
+                    //new File("audio/"+file.get("file_id")+".oga").delete();
+                    //new File("audio/"+file.get("file_id")+".wav").delete();
                 }
             }
             try {
