@@ -24,7 +24,15 @@ public class Bot {
     int lastOffset = 857551151;
 
     public void start() throws IOException {
-        //Prendiamo l'ultimo update_ID
+
+        File dir = new File("audio");
+        if(!dir.exists()){
+            try{dir.mkdir();}
+            catch (SecurityException e){
+                System.err.println("Non hai i permessi per creare la cartella audio");
+                return;
+            }
+        }
 
         while(true){
             int offset = lastOffset+1;
