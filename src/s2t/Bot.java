@@ -104,7 +104,7 @@ public class Bot {
 
     public static synchronized void newIteration(){
         trascrizioniEffettuate++;
-        if(trascrizioniEffettuate != 0){
+        if(trascrizioniEffettuate % 50 == 0){
             try {
                 FileOutputStream out = new FileOutputStream("bot_log.txt", true);
                 out.write(
