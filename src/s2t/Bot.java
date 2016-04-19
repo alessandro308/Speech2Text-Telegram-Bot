@@ -12,6 +12,8 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,24 +24,29 @@ public class Bot {
     private String url = "https://api.telegram.org/bot"+TOKEN+"/";
     static JSONParser parser = new JSONParser();
     int lastOffset = 857551151;
+    static int trascrizioniEffettuate = 0;
 
     public void start() throws IOException {
         ExecutorService ex = Executors.newFixedThreadPool(6);
         File dir = new File("audio");
         if(!dir.exists()){
-            try{dir.mkdir();}
+            try{
+                dir.mkdir();
+                File f = new File("bot_log.txt");
+                f.createNewFile();
+            }
             catch (SecurityException e){
                 System.err.println("Non hai i permessi per creare la cartella audio");
                 return;
             }
         }
+        newIteration();
 
         while(true){
             int offset = lastOffset+1;
             URL update = new URL(url+"getUpdates?offset="+offset);
             JSONObject response = callJSON(update);
             JSONArray results = (JSONArray) response.get("result");
-            System.out.println(response);
             lastOffset = getLastID(response);
 
             for(Object res : results){
@@ -92,6 +99,23 @@ public class Bot {
             new Bot().start();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static synchronized void newIteration(){
+        trascrizioniEffettuate++;
+        if(trascrizioniEffettuate != 0){
+            try {
+                FileOutputStream out = new FileOutputStream("bot_log.txt", true);
+                out.write(
+                        ("Effettuata "+trascrizioniEffettuate+" al tempo UNIX "+
+                                new java.util.Date(System.currentTimeMillis())+"\n").getBytes()
+                        );
+                out.close();
+            } catch (IOException e) {
+                e.getCause();
+                System.err.println("Errore scrittura "+e.getMessage());
+            }
         }
     }
 }

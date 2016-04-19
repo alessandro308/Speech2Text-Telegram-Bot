@@ -57,6 +57,7 @@ public class WitTranscription implements Transcription {
             //System.out.println("Risultato " + res);
             if (!res.equals(""))
                 this.trascrizione = (JSONObject) p.parse(res);
+            Bot.newIteration();
             return res;
         } catch (ParseException ex) {
             ex.printStackTrace();
