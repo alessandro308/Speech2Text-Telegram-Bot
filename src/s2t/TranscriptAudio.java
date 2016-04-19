@@ -40,13 +40,14 @@ public class TranscriptAudio implements Runnable {
     @Override
     public void run() {
         JSONObject message = (JSONObject) ((JSONObject)res).get("message");
+        boolean forward = (message.get("forward_from") != null);
 
         JSONObject voice = (JSONObject) (message.get("voice"));
         if(voice != null){
 
             if(!downloadAndConvert(voice))
                 return;
-            transcript(message, voice);
+            transcript(message, voice, forward);
 
         }else{
             JSONObject document = (JSONObject) (message.get("document"));
@@ -55,7 +56,7 @@ public class TranscriptAudio implements Runnable {
                     if (document.get("mime_type").equals("application/octet-stream")) {
                         if(!downloadAndConvert(document))
                             return;
-                        transcript(message, document);
+                        transcript(message, document, forward);
                     }
                 } catch (NullPointerException e){
                     return;
@@ -98,15 +99,20 @@ public class TranscriptAudio implements Runnable {
         }
     }
 
-    private void transcript(JSONObject message, JSONObject voice){
+    private void transcript(JSONObject message, JSONObject voice, boolean forward){
         JSONObject chat = (JSONObject) message.get("chat");
         Long chatID = (Long) chat.get("id");
         Transcription trasc = new WitTranscription();
-        String text;
+        String text = "";
 
         try{
             trasc.transcript("audio/"+voice.get("file_id")+".wav");
-            text = trasc.getText();
+            if(forward){
+                String name = (String) ((JSONObject) message.get("forward_from")).get("first_name");
+                if( name != null)
+                    text += name+" ha detto: \n";
+            }
+            text += trasc.getText();
             sendMessage(chatID, text);
         } catch (NullPointerException e){
             sendMessage(chatID, "Errore interno al server (NullPointerException)");

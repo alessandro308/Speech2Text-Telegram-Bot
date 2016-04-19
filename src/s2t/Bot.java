@@ -38,14 +38,14 @@ public class Bot {
             int offset = lastOffset+1;
             URL update = new URL(url+"getUpdates?offset="+offset);
             JSONObject response = callJSON(update);
-            System.out.println(response);
-            //System.out.println("Update at "+System.currentTimeMillis()/1000L);
             JSONArray results = (JSONArray) response.get("result");
+            System.out.println(response);
             lastOffset = getLastID(response);
 
             for(Object res : results){
                 ex.submit(new TranscriptAudio(res, url));
             }
+
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
