@@ -1,4 +1,5 @@
 out.txt
-out/*
+out/
 audio/*
-.idea/*
+.idea/
+bot_log.txt
