@@ -54,7 +54,7 @@ public class WitTranscription implements Transcription {
             JSONParser p = new JSONParser();
 
             //Scarto primo carattere perchè è un EOF
-            System.out.println("Risultato " + res);
+            //System.out.println("Risultato " + res);
             if (!res.equals(""))
                 this.trascrizione = (JSONObject) p.parse(res);
             return res;
@@ -63,12 +63,12 @@ public class WitTranscription implements Transcription {
             return "";
         }
     }
-    
+
     public String getText() {
         if(trascrizione == null){
             return "";
         }else{
-            System.out.println(trascrizione);
+            //System.out.println(trascrizione);
             String text = (String) this.trascrizione.get("_text");
             if(text == null)
                  return "";
