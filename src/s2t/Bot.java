@@ -1,5 +1,7 @@
 package s2t;
-
+/* CURL:
+    curl -i -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: audio/wav" --data-binary "@amico.wav" 'https://api.wit.ai/speech?v=20141022'
+*/
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -22,15 +24,7 @@ public class Bot {
     int lastOffset = 857551151;
 
     public void start() throws IOException {
-        File theDir = new File("audio");
-        if(!theDir.exists()){
-            try{
-                theDir.mkdir();
-            } catch (SecurityException e){
-                System.out.println("Errore creazione cartella Audio");
-                return;
-            }
-        }
+        //Prendiamo l'ultimo update_ID
 
         while(true){
             int offset = lastOffset+1;

@@ -1,7 +1,5 @@
 package s2t;
-/* CURL:
-    curl -i -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: audio/wav" --data-binary "@amico.wav" 'https://api.wit.ai/speech?v=20141022'
-*/
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -27,8 +25,8 @@ public class WitTranscription implements Transcription {
 
         PostMethod filePost = new PostMethod(url);
 
-        filePost.addRequestHeader("Authorization", "Bearer " + PARAM.witServerAPI);
-        filePost.addRequestHeader("Content-Type", "audio/wav");
+        filePost.setRequestHeader("Authorization", "Bearer " + PARAM.witServerAPI);
+        filePost.setRequestHeader("Content-Type", "audio/wav");
 
         try {
             Part[] parts = {new FilePart(binfile.getName(), binfile)};
@@ -36,7 +34,7 @@ public class WitTranscription implements Transcription {
             filePost.setRequestEntity(new MultipartRequestEntity(parts, filePost.getParams()));
 
             HttpClient client = new HttpClient();
-            client.getHttpConnectionManager().getParams().setConnectionTimeout(15000);
+            client.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
 
             int status = client.executeMethod(filePost);
 
