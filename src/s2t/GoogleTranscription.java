@@ -17,8 +17,6 @@ import java.util.Scanner;
 public class GoogleTranscription implements Transcription {
     JSONObject trascrizione;
 
-    public GoogleTranscription(){};
-
     public String getText(){
         if(trascrizione == null){
             return "";
