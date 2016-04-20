@@ -1,5 +1,6 @@
 package s2t;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -118,7 +119,6 @@ public class BingTranscription implements Transcription{
         try{
         if (!res.equals(""))
             this.trascrizione = (JSONObject) p2.parse(res);
-            System.out.println(this.getText());
         Bot.newIteration();
         return res;
         } catch (ParseException ex) {
@@ -127,12 +127,12 @@ public class BingTranscription implements Transcription{
         }
     }
 
-    //ToDo
     public String getText() {
         if(trascrizione == null){
             return "";
         }else{
-            String text = "FIXME";
+            //Mi merito l'inferno per questa riga, mi dispiace
+            String text = (String)((JSONObject)(((JSONArray)this.trascrizione.get("results")).get(0))).get("name");
             if(text == null)
                 return "";
             return text;
