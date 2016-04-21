@@ -35,7 +35,7 @@ public class TranscriptAudio implements Runnable {
         }
         return "";
     }
-    @Override
+
     public void run() {
         JSONObject message = (JSONObject) ((JSONObject)res).get("message");
         boolean forward = (message.get("forward_from") != null);
@@ -43,11 +43,9 @@ public class TranscriptAudio implements Runnable {
         try{
             JSONObject voice = (JSONObject) (message.get("voice"));
             if(voice != null){
-
                 if(!downloadAndConvert(voice))
                     return;
                 transcript(message, voice, forward);
-
             }else{
                 JSONObject document = (JSONObject) (message.get("document"));
                 if(document != null){
@@ -108,6 +106,8 @@ public class TranscriptAudio implements Runnable {
         //SCEGLIERE SERVIZIO
         Transcription trasc = new WitTranscription();
         //Transcription trasc = new GoogleTranscription();
+        //Transcription trasc = new BingTranscription();
+
         String text = "";
 
         try{
