@@ -5,3 +5,5 @@ audio/*
 bot_log.txt
 
 out/production/TelegramBot/s2t/Bot.class
+
+*.class
