@@ -27,7 +27,7 @@ public class TranscriptAudio implements Runnable {
             if(!text.equals(""))
                 return Bot.callString(new URL(url+"sendMessage?chat_id="+chat_id+"&text="+ URLEncoder.encode(text, "UTF-8")));
             else
-                return Bot.callString(new URL(url+"sendMessage?chat_id="+chat_id+"&text="+URLEncoder.encode("Riprova. Non sono riuscito a tradurre.", "ISO-8859-1")));
+                return Bot.callString(new URL(url+"sendMessage?chat_id="+chat_id+"&text="+URLEncoder.encode("Non sono riuscito a tradurre.", "ISO-8859-1")));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (MalformedURLException e) {
@@ -117,7 +117,10 @@ public class TranscriptAudio implements Runnable {
                 if( name != null)
                     text += name+" ha detto: \n";
             }
-            text += trasc.getText();
+            if(trasc.getText().equals(""))
+                text = "";
+            else
+                text += trasc.getText();
             sendMessage(chatID, text);
         } catch (NullPointerException e){
             sendMessage(chatID, "Errore interno al server (NullPointerException)");
