@@ -95,7 +95,8 @@ public class Bot {
 
     public static void main(String[] args){
         try {
-            new Bot().start();
+            //new Bot().start();
+            new BingTranscription().transcript("/home/betmaster/test.wav");
         } catch (IOException e) {
             e.printStackTrace();
         }

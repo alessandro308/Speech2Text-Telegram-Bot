@@ -5,17 +5,16 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
+import java.net.InterfaceAddress;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.UUID;
+import java.util.HashMap;
 
 public class BingTranscription implements Transcription{
 
@@ -41,25 +40,19 @@ public class BingTranscription implements Transcription{
                 URLEncoder.encode(client_secret, charset),
                 URLEncoder.encode(scope, charset));
 
-        //Creo la richiesta
-        //NB: Setto la Content-Lenght a mano, Microzozz la richiede
+        //Carico i dati da postare
         byte[] postData = tokenQuery.getBytes(StandardCharsets.UTF_8);
         int postDataLength = postData.length;
-        URL tokenUrl = new URL( tokenRequest );
-        HttpsURLConnection con = (HttpsURLConnection) tokenUrl.openConnection();
-        con.setDoOutput( true );
-        con.setInstanceFollowRedirects( false );
-        con.setRequestMethod( "POST" );
-        con.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded");
-        con.setRequestProperty( "charset", "utf-8");
-        con.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
-        con.setUseCaches( false );
-        try( DataOutputStream wr = new DataOutputStream( con.getOutputStream())) {
-            wr.write( postData );
-        }
 
-        BufferedReader rd = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String token = rd.readLine();
+        //Creo l'header
+        Map tokenHeader = new HashMap<String,String>();
+        tokenHeader.put("Content-Type", "application/x-www-form-urlencoded");
+        tokenHeader.put("charset", "utf-8");
+        tokenHeader.put( "Content-Length", Integer.toString( postDataLength ));
+
+        //Eseguo la richiesta
+        Post tokenPost = new Post(tokenRequest,tokenQuery,tokenHeader,postData);
+        String token = tokenPost.execute();
 
         JSONParser p = new JSONParser();
         JSONObject tokenjson;
@@ -69,10 +62,15 @@ public class BingTranscription implements Transcription{
             ex.printStackTrace();
             return "";
         }
-
         token = (String)tokenjson.get("access_token");
+        System.out.println(token);
 
-        /// --- Eseguo l'effettiva richiesta ---
+
+        /// ######### Richiesta di trascrizione #########
+
+        //Url dove fare la richiesta
+        String requestUrl = "https://speech.platform.bing.com/recognize/query";
+
         //Popolo le variabili con il contenuto della richiesta
         String version = "3.0";
         String requestid = UUID.randomUUID().toString(); //uuid da generare random
@@ -96,31 +94,23 @@ public class BingTranscription implements Transcription{
                 URLEncoder.encode(instanceid, charset),
                 URLEncoder.encode(profanitymarkup, charset));
 
-        String requestUrl = "https://speech.platform.bing.com/recognize/query?" + query;
+        byte[] audioFile = Files.readAllBytes(Paths.get(fileName));
+        int audioFileLength = audioFile.length;
 
-        HttpsURLConnection reqcon = (HttpsURLConnection) new URL(requestUrl).openConnection();
-        reqcon.setRequestMethod("POST");
-        reqcon.addRequestProperty("Authorization", "Bearer " + token);
-        reqcon.addRequestProperty("Content-Type", "audio/wav; samplerate=16000; sourcerate=8000; trustsourcerate=true");
+        Map header = new HashMap<String,String>();
+        header.put("Authorization", "Bearer " + token);
+        header.put("Content-Type", "audio/wav; samplerate=16000; sourcerate=8000; trustsourcerate=true");
+        header.put("Content-Length", Integer.toString(audioFileLength));
 
-        reqcon.setDoInput(true);
-        reqcon.setDoOutput(true);
-        DataOutputStream wr = new DataOutputStream(reqcon.getOutputStream());
-        wr.write(Files.readAllBytes(Paths.get(fileName)));
-
-        BufferedReader rd2 = new BufferedReader(new InputStreamReader(reqcon.getInputStream()));
-        String line;
-        String res = "";
-        while ((line = rd2.readLine()) != null)
-            res += line;
+        Post post = new Post(requestUrl,query,header,audioFile);
+        String res= post.execute();
 
         JSONParser p2 = new JSONParser();
-
         try{
-        if (!res.equals(""))
-            this.trascrizione = (JSONObject) p2.parse(res);
-        Bot.newIteration();
-        return res;
+            if (!res.equals(""))
+                this.trascrizione = (JSONObject) p2.parse(res);
+            Bot.newIteration();
+            return res;
         } catch (ParseException ex) {
             ex.printStackTrace();
             return "";
