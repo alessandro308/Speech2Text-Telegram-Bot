@@ -7,11 +7,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b8f5e6e3-be71-4260-a1c8-c32ad032e7c4" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/commons-cli-1.2.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/commons-codec-1.10.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/commons-codec-1.9.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/commons-logging-1.2.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/httpasyncclient-4.1.1.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/httpasyncclient-cache-4.1.1.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/httpclient-4.5.1.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/httpclient-4.5.2.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/httpclient-cache-4.5.1.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/httpclient-cache-4.5.2.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/httpclient-win-4.5.2.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/httpcore-4.4.4.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/httpcore-ab-4.4.4.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/httpcore-nio-4.4.4.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/httpmime-4.5.2.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/jna-4.1.0.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/jna-platform-4.1.0.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bin/org.apache.commons.httpclient.jar" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/s2t/Bot.java" afterPath="$PROJECT_DIR$/src/s2t/Bot.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/s2t/GoogleTranscription.java" afterPath="$PROJECT_DIR$/src/s2t/GoogleTranscription.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/s2t/TranscriptAudio.java" afterPath="$PROJECT_DIR$/src/s2t/TranscriptAudio.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/s2t/WitTranscription.java" afterPath="$PROJECT_DIR$/src/s2t/WitTranscription.java" />
     </list>
     <ignored path="TelegramBot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -37,7 +51,7 @@
       <file leaf-file-name="Bot.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/s2t/Bot.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="410">
+            <state relative-caret-position="780">
               <caret line="52" column="45" selection-start-line="52" selection-start-column="30" selection-end-line="52" selection-end-column="45" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -49,7 +63,7 @@
       <file leaf-file-name="BingTranscription.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/s2t/BingTranscription.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
+            <state relative-caret-position="255">
               <caret line="31" column="8" selection-start-line="31" selection-start-column="8" selection-end-line="31" selection-end-column="8" />
               <folding />
             </state>
@@ -69,8 +83,8 @@
       <file leaf-file-name="TranscriptAudio.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/s2t/TranscriptAudio.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="401">
-              <caret line="108" column="8" selection-start-line="108" selection-start-column="8" selection-end-line="108" selection-end-column="8" />
+            <state relative-caret-position="1245">
+              <caret line="95" column="42" selection-start-line="95" selection-start-column="42" selection-end-line="95" selection-end-column="42" />
               <folding />
             </state>
           </provider>
@@ -79,7 +93,7 @@
       <file leaf-file-name="GoogleTranscription.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/s2t/GoogleTranscription.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
+            <state relative-caret-position="630">
               <caret line="42" column="39" selection-start-line="42" selection-start-column="39" selection-end-line="42" selection-end-column="39" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -91,7 +105,7 @@
       <file leaf-file-name="WitTranscription.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/s2t/WitTranscription.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="236">
+            <state relative-caret-position="330">
               <caret line="22" column="53" selection-start-line="22" selection-start-column="46" selection-end-line="22" selection-end-column="53" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -170,8 +184,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scratches" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -229,6 +241,8 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -711,11 +725,12 @@
       <workItem from="1461148780812" duration="260000" />
       <workItem from="1461149055270" duration="25000" />
       <workItem from="1461246629573" duration="1292000" />
+      <workItem from="1461248036902" duration="29000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="49256000" />
+    <option name="totallyTimeSpent" value="49285000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="235" y="23" width="1006" height="873" extended-state="0" />
@@ -729,7 +744,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34950247" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.34950247" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1153,7 +1168,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/s2t/WitTranscription.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="236">
+        <state relative-caret-position="330">
           <caret line="22" column="53" selection-start-line="22" selection-start-column="46" selection-end-line="22" selection-end-column="53" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1163,7 +1178,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/s2t/Bot.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="410">
+        <state relative-caret-position="780">
           <caret line="52" column="45" selection-start-line="52" selection-start-column="30" selection-end-line="52" selection-end-column="45" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1173,7 +1188,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/s2t/GoogleTranscription.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
+        <state relative-caret-position="630">
           <caret line="42" column="39" selection-start-line="42" selection-start-column="39" selection-end-line="42" selection-end-column="39" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1183,7 +1198,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/s2t/BingTranscription.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
+        <state relative-caret-position="255">
           <caret line="31" column="8" selection-start-line="31" selection-start-column="8" selection-end-line="31" selection-end-column="8" />
           <folding />
         </state>
@@ -1191,8 +1206,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/s2t/TranscriptAudio.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="401">
-          <caret line="108" column="8" selection-start-line="108" selection-start-column="8" selection-end-line="108" selection-end-column="8" />
+        <state relative-caret-position="1245">
+          <caret line="95" column="42" selection-start-line="95" selection-start-column="42" selection-end-line="95" selection-end-column="42" />
           <folding />
         </state>
       </provider>
