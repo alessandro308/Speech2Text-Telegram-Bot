@@ -1,6 +1,7 @@
 # AntiTalk_bot 
-
-![AntiTalk_bot](https://raw.githubusercontent.com/alessandro308/Speech2Text-Telegram-Bot/master/escribano.jpg)
+<a href="https://telegram.me/AntiTalk_bot">
+  <img src="http://www.ondagraphica.com/wp-content/uploads/stoptalking.png" align="center"/>
+</a>
 
 Oh no! Another audio message that i can't/want to listen...
 No problem! Foward it to [AntiTalk_bot](https://telegram.me/AntiTalk_bot) and read a transcription powered by Wit, Google, Microsoft and other services!
