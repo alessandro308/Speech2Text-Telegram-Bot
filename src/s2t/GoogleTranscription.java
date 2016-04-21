@@ -1,17 +1,16 @@
 package s2t;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class GoogleTranscription implements Transcription {
@@ -30,50 +29,26 @@ public class GoogleTranscription implements Transcription {
     public String transcript(String fileName) throws IOException {
         String chromeDevKey = PARAM.chromeKey1;
 
-        String params = "?output=json&lang=it-IT&key="+chromeDevKey;
-        String url = "https://www.google.com/speech-api/v2/recognize"+params;
+        String params = "output=json&lang=it-IT&key="+chromeDevKey;
+        String url = "https://www.google.com/speech-api/v2/recognize";
 
-        File binfile = new File(fileName);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "audio/l16; rate=16000;");
+        try{
+            Post post = new Post(url, params, headers, Files.readAllBytes(Paths.get(fileName)));
+            String res = post.execute();
 
-        PostMethod filePost = new PostMethod(url);
-
-        filePost.setRequestHeader("Content-Type","audio/l16; rate=16000;");
-
-        try {
-            Part[] parts = { new FilePart(binfile.getName(), binfile) };
-
-            filePost.setRequestEntity(new MultipartRequestEntity(parts, filePost.getParams()));
-
-            HttpClient client = new HttpClient();
-            client.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
-
-            int status = client.executeMethod(filePost);
-
-            if (status != HttpStatus.SC_OK) {
-                System.out.println("Non e\' ok un cactus.");
-            }
-
-            Scanner in = new Scanner(filePost.getResponseBodyAsStream(), "UTF-8");
-
-            String res = "";
-            System.out.println("Primo ris: "+in.nextLine());//Salto la prima riga che è un {result: []}
-            String line;
-            while(in.hasNextLine()){
-                    res += in.nextLine();
-            }
             JSONParser p = new JSONParser();
-
-            //Scarto primo carattere perchè è un EOF
-            System.out.println("Risultato "+res);
-            if(!res.equals(""))
+            if(!res.equals("")){
+                System.out.println(res);
                 this.trascrizione = (JSONObject) p.parse(res);
-
-        }catch (Exception ex) {
+                return res;
+            }
+        } catch (Exception ex) {
             ex.printStackTrace();
-        } finally {
-            filePost.releaseConnection();
-            return " ";
+            Bot.addLog("ECCEZIONE "+ ex.getMessage() +"\n"+ ex.getStackTrace());
         }
+        return "";
     }
 
 }

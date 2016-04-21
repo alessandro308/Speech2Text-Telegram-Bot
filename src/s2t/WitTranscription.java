@@ -5,43 +5,29 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 public class WitTranscription implements Transcription {
     JSONObject trascrizione;
 
     public String transcript(String fileName) throws IOException {
         try {
-            String params = "?v=20141022";
+            String params = "v=20141022";
 
-            String url = "https://api.wit.ai/speech" + params;
-
-            HttpsURLConnection con = (HttpsURLConnection) new URL(url).openConnection();
-            con.setRequestMethod("POST");
-            con.addRequestProperty("Authorization", "Bearer " + PARAM.witServerAPI);
-            con.addRequestProperty("Content-Type", "audio/wav");
-
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-            wr.write(Files.readAllBytes(Paths.get(fileName)));
-
-            BufferedReader rd = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String line;
-            String res = "";
-            while ((line = rd.readLine()) != null)
-                res += line;
+            String url = "https://api.wit.ai/speech";
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Authorization", "Bearer " + PARAM.witServerAPI);
+            headers.put("Content-Type", "audio/wav");
+            Post post = new Post(url, params, headers, Files.readAllBytes(Paths.get(fileName)));
+            String res = post.execute();
 
             JSONParser p = new JSONParser();
 
-            //Scarto primo carattere perchè è un EOF
-            //System.out.println("Risultato " + res);
             if (!res.equals(""))
                 this.trascrizione = (JSONObject) p.parse(res);
             Bot.newIteration();

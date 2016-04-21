@@ -26,6 +26,7 @@ public class Bot {
     static int trascrizioniEffettuate = 0;
 
     public void start() throws IOException {
+        Bot.addLog("AVVIO");
         ExecutorService ex = Executors.newFixedThreadPool(6);
         File dir = new File("audio");
         if(!dir.exists()){
@@ -89,15 +90,16 @@ public class Bot {
         try {
             return (JSONObject) parser.parse(callString(url));
         } catch (ParseException e) {
+            addLog("Errore parsing risposta da "+url);
             return null;
         }
     }
 
     public static void main(String[] args){
         try {
-            //new Bot().start();
-            new BingTranscription().transcript("/home/betmaster/test.wav");
-        } catch (IOException e) {
+            new Bot().start();
+        } catch (Exception e) {
+            addLog("ECCEZIONE \n"+e.getStackTrace());
             e.printStackTrace();
         }
     }
@@ -116,6 +118,20 @@ public class Bot {
                 e.getCause();
                 System.err.println("Errore scrittura "+e.getMessage());
             }
+        }
+    }
+
+    public static synchronized void addLog(String text){
+        try {
+            FileOutputStream out = new FileOutputStream("bot_log.txt", true);
+            out.write(
+                    (text+" at"+
+                            new java.util.Date(System.currentTimeMillis())+"\n").getBytes()
+            );
+            out.close();
+        } catch (IOException e) {
+            e.getCause();
+            System.err.println("Errore scrittura "+e.getMessage());
         }
     }
 }

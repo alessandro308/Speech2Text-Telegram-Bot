@@ -22,7 +22,7 @@ public class TranscriptAudio implements Runnable {
         this.res = res;
     }
 
-    private String sendMessage(Long chat_id, String text){
+    private String sendMessage(Long chat_id, String text) throws IOException {
         try {
             if(!text.equals(""))
                 return Bot.callString(new URL(url+"sendMessage?chat_id="+chat_id+"&text="+ URLEncoder.encode(text, "UTF-8")));
@@ -32,8 +32,6 @@ public class TranscriptAudio implements Runnable {
             e.printStackTrace();
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return "";
     }
@@ -42,26 +40,30 @@ public class TranscriptAudio implements Runnable {
         JSONObject message = (JSONObject) ((JSONObject)res).get("message");
         boolean forward = (message.get("forward_from") != null);
 
-        JSONObject voice = (JSONObject) (message.get("voice"));
-        if(voice != null){
+        try{
+            JSONObject voice = (JSONObject) (message.get("voice"));
+            if(voice != null){
 
-            if(!downloadAndConvert(voice))
-                return;
-            transcript(message, voice, forward);
-
-        }else{
-            JSONObject document = (JSONObject) (message.get("document"));
-            if(document != null){
-                try {
-                    if (document.get("mime_type").equals("application/octet-stream")) {
-                        if(!downloadAndConvert(document))
-                            return;
-                        transcript(message, document, forward);
-                    }
-                } catch (NullPointerException e){
+                if(!downloadAndConvert(voice))
                     return;
+                transcript(message, voice, forward);
+
+            }else{
+                JSONObject document = (JSONObject) (message.get("document"));
+                if(document != null){
+                    try {
+                        if (document.get("mime_type").equals("application/octet-stream")) {
+                            if(!downloadAndConvert(document))
+                                return;
+                            transcript(message, document, forward);
+                        }
+                    } catch (NullPointerException e){
+                        return;
+                    }
                 }
             }
+        } catch (IOException e) {
+            Bot.addLog("ECCEZIONE \n"+e.getStackTrace());
         }
     }
 
@@ -99,10 +101,13 @@ public class TranscriptAudio implements Runnable {
         }
     }
 
-    private void transcript(JSONObject message, JSONObject voice, boolean forward){
+    private void transcript(JSONObject message, JSONObject voice, boolean forward) throws IOException {
         JSONObject chat = (JSONObject) message.get("chat");
         Long chatID = (Long) chat.get("id");
+
+        //SCEGLIERE SERVIZIO
         Transcription trasc = new WitTranscription();
+        //Transcription trasc = new GoogleTranscription();
         String text = "";
 
         try{
@@ -117,9 +122,6 @@ public class TranscriptAudio implements Runnable {
         } catch (NullPointerException e){
             sendMessage(chatID, "Errore interno al server (NullPointerException)");
             e.printStackTrace();
-        } catch (IOException e){
-            e.printStackTrace();
-            return;
         }
 
         new File("audio/"+voice.get("file_id")+".oga").delete();
