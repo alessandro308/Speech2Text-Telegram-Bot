@@ -1,7 +1,5 @@
 package s2t;
 
-import org.json.simple.parser.ParseException;
-
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

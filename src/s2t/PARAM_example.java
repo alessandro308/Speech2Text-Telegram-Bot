@@ -5,12 +5,12 @@ public class PARAM_example {
     static final String botToken = "";
 
     //Google speech api key
-    static final String chromeKey1 = "";
+    static final String GoogleSpeechAPIKey = "";
 
     //Wit.ai Server api key
     static final String WitServerAPI = "";
 
     //Microsoft speech api keys
-    static final String key1 = "";
-    static final String key2 = "";
+    static final String BingSpeechAPIKey1 = "";
+    static final String BingSpeechAPIKey2 = "";
 }

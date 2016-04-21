@@ -5,16 +5,14 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-
 import java.io.IOException;
-import java.net.InterfaceAddress;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.HashMap;
 
 public class BingTranscription implements Transcription{
 
@@ -23,14 +21,14 @@ public class BingTranscription implements Transcription{
     public String transcript(String fileName) throws IOException {
         String charset = StandardCharsets.UTF_8.name();
 
-        /// --- PRENDO IL TOKEN ---
+        /// ######### PRENDO IL TOKEN #########
         //Stringa a cui fare la richiesta
         String tokenRequest = "https://oxford-speech.cloudapp.net/token/issueToken";
 
         //Popolo le variabili con il contenuto della richiesta
         String grant_type = "client_credentials";
-        String client_id = PARAM.key1;
-        String client_secret = PARAM.key2;
+        String client_id = PARAM.BingSpeechAPIKey1;
+        String client_secret = PARAM.BingSpeechAPIKey2;
         String scope = "https://speech.platform.bing.com";
 
         //Costruisco la query con i parametri sopra popolati
@@ -48,7 +46,7 @@ public class BingTranscription implements Transcription{
         Map tokenHeader = new HashMap<String,String>();
         tokenHeader.put("Content-Type", "application/x-www-form-urlencoded");
         tokenHeader.put("charset", "utf-8");
-        tokenHeader.put( "Content-Length", Integer.toString( postDataLength ));
+        tokenHeader.put( "Content-Length", Integer.toString(postDataLength));
 
         //Eseguo la richiesta
         Post tokenPost = new Post(tokenRequest,tokenQuery,tokenHeader,postData);
@@ -67,7 +65,6 @@ public class BingTranscription implements Transcription{
 
 
         /// ######### Richiesta di trascrizione #########
-
         //Url dove fare la richiesta
         String requestUrl = "https://speech.platform.bing.com/recognize/query";
 
