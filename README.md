@@ -15,7 +15,6 @@ This bot also work with Whatsapp, just share the audio with Telegram and then se
 
 ###Dependencies:
 - Opus-tools
-- Apache2HttpClient <- We are working to remove this
 
 ###I want this on my server
 Just create a PARAM.class file following the PARAM_example.class structure, compile and run the .jar
