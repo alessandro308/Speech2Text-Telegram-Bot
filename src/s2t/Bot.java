@@ -22,6 +22,7 @@ public class Bot {
 
     public void start() throws IOException {
         Bot.addLog("AVVIO");
+        System.out.println("AVVIO");
         ExecutorService ex = Executors.newFixedThreadPool(6);
         File dir = new File("audio");
         if(!dir.exists()){
@@ -31,7 +32,8 @@ public class Bot {
                 f.createNewFile();
             }
             catch (SecurityException e){
-                System.err.println("Non hai i permessi per creare la cartella audio");
+                Bot.addLog("Non hai i permessi per creare la cartella audio");
+                System.out.println("Non hai i permessi per creare la cartella audio");
                 return;
             }
         }
@@ -44,20 +46,20 @@ public class Bot {
             JSONArray results = (JSONArray) response.get("result");
             lastOffset = getLastID(response);
 
-            for(Object res : results){
+            for(Object res : results)
                 ex.submit(new TranscriptAudio(res, url));
-            }
 
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
+                Bot.addLog("Interruped Exception");
+                System.out.println("Interruped Exception");
                 return;
             }
         }
     }
 
     private int getLastID(JSONObject updateResult) {
-
         JSONParser parser = new JSONParser();
         Vector<Integer> returnarray = new Vector<>();
 
@@ -68,7 +70,6 @@ public class Bot {
             return this.lastOffset;
         return Integer.parseInt( (((JSONObject)results.get(results.size()-1)).get("update_id")).toString());
     }
-
 
     static String callString(URL url) throws IOException{
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
